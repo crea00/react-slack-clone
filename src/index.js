@@ -15,7 +15,7 @@ const Root = () => (
       <Route path="/register" component={Register} />
     </Switch>
   </Router>
-)
+);
 
 ReactDOM.render(<Root />, document.getElementById('root'));
 
