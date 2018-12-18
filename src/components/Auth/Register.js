@@ -85,7 +85,14 @@ class Register extends React.Component {
   }
 
   render() {
-    const { username, email, password, passwordConfirmation, errors } = this.state;
+    const { 
+      username,
+      email,
+      password,
+      passwordConfirmation,
+      errors,
+      loading,
+    } = this.state;
 
     return (
       <Grid textAlign="center" verticalAlign="middle" className="app">
