@@ -1,12 +1,21 @@
 import React, { Component } from 'react';
-import firebase from '../../firebase';
 import { Grid, Header, Icon, Dropdown } from 'semantic-ui-react';
+import { connect } from 'react-redux';
+import firebase from '../../firebase';
 
 class UserPanel extends Component {
+  state = {
+    user: this.props.currentUser
+  }
+
   dropdownOptions = () => [
     {
       key: 'user',
-      text: <span>Signed in as <strong>User</strong></span>,
+      text: (
+        <span>
+          Signed in as <strong>{this.state.user || this.state.user.displayName}</strong>
+        </span>
+      ),
       disabled: true
     },
     {
@@ -27,6 +36,7 @@ class UserPanel extends Component {
   }
 
   render() {
+
     return (
       <Grid style={{ background: '#4c3c4c'}} >
         <Grid.Column>
@@ -50,4 +60,9 @@ class UserPanel extends Component {
   }
 }
 
-export default UserPanel;
+const mapStateToProps = state => ({
+  currentUser: state.user.currentUser
+});
+
+export default connect(mapStateToProps)(UserPanel);
+
