@@ -17,6 +17,7 @@ module.exports = {
         "arrow-parens": 0,
         "arrow-body-style": 0,
         "comma-dangle": 0,
+        "react/jsx-one-expression-per-line": 0,
         "react/destructuring-assignment": 0,
         "react/jsx-filename-extension": 0
     }

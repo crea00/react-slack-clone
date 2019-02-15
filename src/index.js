@@ -15,7 +15,6 @@ import firebase from './firebase';
 import rootReducer from './reducers';
 import { setUser, clearUser } from './actions';
 
-
 import 'semantic-ui-css/semantic.min.css';
 
 const store = createStore(rootReducer, composeWithDevTools());

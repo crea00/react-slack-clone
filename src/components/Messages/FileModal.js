@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import mime from 'mime-types';
-import { Modal, Input, Button, Icon, Menu } from 'semantic-ui-react';
+import { Modal, Input, Button, Icon } from 'semantic-ui-react';
 
 class FileModal extends Component {
   state = {
