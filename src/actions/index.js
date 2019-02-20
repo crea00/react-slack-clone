@@ -23,8 +23,8 @@ export const setCurrentChannel = channel => {
     payload: {
       currentChannel: channel
     }
-  }
-}
+  };
+};
 
 export const setPrivateChannel = isPrivateChannel => {
   return {
@@ -32,5 +32,14 @@ export const setPrivateChannel = isPrivateChannel => {
     payload: {
       isPrivateChannel
     }
-  }
-}
+  };
+};
+
+export const setUserPosts = userPosts => {
+  return {
+    type: actionsTypes.SET_USER_POSTS,
+    payload: {
+      userPosts
+    }
+  };
+};
