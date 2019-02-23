@@ -1,18 +1,23 @@
 import React, { Component } from 'react';
 import { Grid, Header, Icon, Dropdown, Image, Modal, Input, Button } from 'semantic-ui-react';
 import { connect } from 'react-redux';
-import firebase from '../../firebase';
 import AvatarEditor from 'react-avatar-editor';
+import firebase from '../../firebase';
 
 class UserPanel extends Component {
   state = {
-    // user: this.props.currentUser
-    displayName: this.props.currentUser.displayName,
-    photoURL: this.props.currentUser.photoURL,
+    user: this.props.currentUser,
     modal: false,
     previewImage: '',
     croppedImage: '',
-    blob: ''
+    blob: '',
+    uploadedCroppedImage: '',
+    storageRef: firebase.storage().ref(),
+    userRef: firebase.auth().currentUser,
+    usersRef: firebase.database().ref('users'),
+    metadata: {
+      contentType: 'image/jpeg'
+    }
   }
 
   openModal = () => this.setState({ modal: true });
@@ -39,6 +44,43 @@ class UserPanel extends Component {
     }
   ];
 
+  uploadCroppedImage = () => {
+    const { storageRef, userRef, blob, metadata } = this.state;
+
+    storageRef
+      .child(`avatars/user-${userRef.uid}`)
+      .put(blob, metadata)
+      .then(snap => {
+        snap.ref.getDownloadURL().then(downloadURL => {
+          this.setState({ uploadedCroppedImage: downloadURL }, () => this.changeAvatar())
+        });
+      });
+  }
+
+  changeAvatar = () => {
+    this.state.userRef
+      .updateProfile({
+        photoURL: this.state.uploadedCroppedImage
+      })
+      .then(() => {
+        console.log('PhotoURL updated');
+        this.closeModal();
+      })
+      .catch(err => {
+        console.error(err);
+      });
+
+    this.state.usersRef
+      .child(this.state.user.uid)
+      .update({ avatar: this.state.uploadedCroppedImage })
+      .then(() => {
+        console.log('User avatar updated');
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
+
   handleChange = event => {
     const file = event.target.files[0];
     const reader = new FileReader();
@@ -47,7 +89,7 @@ class UserPanel extends Component {
       reader.readAsDataURL(file);
       reader.addEventListener('load', () => {
         this.setState({ previewImage: reader.result });
-      })
+      });
     }
   }
 
@@ -71,7 +113,7 @@ class UserPanel extends Component {
   }
 
   render() {
-    const { displayName, photoURL, modal, previewImage, croppedImage } = this.state;
+    const { user, modal, previewImage, croppedImage } = this.state;
     const { primaryColor } = this.props;
 
     return (
@@ -89,8 +131,8 @@ class UserPanel extends Component {
               <Dropdown
                 trigger={
                   <span>
-                    <Image src={photoURL} spaced="right" avatar />
-                    {displayName}
+                    <Image src={user.photoURL} spaced="right" avatar />
+                    {user.displayName}
                   </span>
                 }
                 options={this.dropdownOptions()} 
@@ -137,7 +179,7 @@ class UserPanel extends Component {
               </Grid>
             </Modal.Content>
             <Modal.Actions>
-              {croppedImage && <Button color="green" inverted>
+              {croppedImage && <Button color="green" inverted onClick={this.uploadCroppedImage}>
                 <Icon name="save" /> Change Avatar
               </Button>}
               <Button color="green" inverted onClick={this.handleCropImage}>
