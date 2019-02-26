@@ -7,6 +7,7 @@ import firebase from '../../firebase';
 import MessagesHeader from './MessagesHeader';
 import MessageForm from './MessageForm';
 import Message from './Message';
+import Typing from './Typing';
 
 class Messages extends Component {
   state = {
@@ -205,7 +206,12 @@ class Messages extends Component {
 
         <Segment>
           <Comment.Group className={progressBar ? 'messages__progress' : 'messages'}>
-            {searchTerm ? this.displayMessages(searchResults) : this.displayMessages(messages)}
+            {searchTerm
+              ? this.displayMessages(searchResults)
+              : this.displayMessages(messages)}
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <span className="user__typing">douglas is typing</span> <Typing />
+            </div>
           </Comment.Group>
         </Segment>
 
